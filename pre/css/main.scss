@@ -78,8 +78,8 @@ body, button {
         
         //Debajo de todos los elementos lógicos tendremos la leyenda > Puede haber de 1 a 7 elementos dentro de la leyenda
         &__legend {
-            margin-top: 8px;
             display: flex;
+            flex-wrap: wrap;
 
             &--item {
                 position: relative;
@@ -94,6 +94,7 @@ body, button {
                 
                 padding-left: 22px;
                 margin-right: 16px;
+                margin-top: 8px;
 
                 //En función de la clase CSS que le acompañe, tendrá un color u otro
                 &::before {
@@ -121,8 +122,18 @@ body, button {
 
         //Visualización
         &__viz {
-            height: 406px;
+            height: 256px;
             margin-top: 12px;
+
+            .chart__circle:last-child {
+                margin-top: 16px;
+            }
+
+            //Visualizaciones
+            #circle--first, #circle--second {
+                width: 100%;
+                height: 100px;
+            }
 
             & .tick text {
                 font-family: 'Titillium Web';
