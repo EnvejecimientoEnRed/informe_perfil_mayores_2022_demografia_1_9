@@ -21,7 +21,7 @@ COLOR_OTHER_2 = '#731854';
 
 export function initChart(iframe) {
     //Desarrollo del gráfico
-    d3.csv('https://raw.githubusercontent.com/CarlosMunozDiazCSIC/informe_perfil_mayores_2022_demografia_1_10/main/data/distribucion_poblacion_extranjeros.csv', function(error,data) {
+    d3.csv('https://raw.githubusercontent.com/CarlosMunozDiazCSIC/informe_perfil_mayores_2022_demografia_1_9/main/data/distribucion_poblacion_extranjeros.csv', function(error,data) {
         if (error) throw error;
 
         //Parcelamos los datos
@@ -142,7 +142,7 @@ export function initChart(iframe) {
         /////
 
         //Iframe
-        setFixedIframeUrl('informe_perfil_mayores_2022_demografia_1_10','distribucion_poblacion_mayor_extranjera');
+        setFixedIframeUrl('informe_perfil_mayores_2022_demografia_1_9','distribucion_poblacion_mayor_extranjera');
 
         //Redes sociales > Antes tenemos que indicar cuál sería el texto a enviar
         setRRSSLinks('distribucion_poblacion_mayor_extranjera');
