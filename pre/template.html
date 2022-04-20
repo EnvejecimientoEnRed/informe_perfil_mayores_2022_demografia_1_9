@@ -37,15 +37,9 @@
                         </button>
                     </div>                  
                 </div>
-                <div class="chart__viz" id="chart">
-                    <div class="chart__circle">
-                        <p>Población general</p>
-                        <div id="circle--first"></div>
-                    </div>
-                    <div class="chart__circle">
-                        <p>Población 65+</p>
-                        <div id="circle--second"></div>
-                    </div>
+                <div class="chart__viz">                 
+                    <div class="chart--viz" id="chart"></div>
+                    <p class="text__xaxis">Porcentaje</p>
                 </div>
                 <!-- Pie de gráfico -->
                 <div class="chart__footer">
@@ -105,16 +99,12 @@
                 <li class="tab tab--rrss" data-target="b-rrss"><i class="fa fa--share fa-share-alt"></i></li>
             </ul>
         </nav>
-        <div class="chart__tooltip" id="tooltip">
-            <p class="chart__tooltip--title"></p>
-            <p class="chart__tooltip--text"></p>
-        </div>  
+        <div class="chart__tooltip" id="tooltip"></div>  
     </div>
     <!-- Uso de PYMJS para alturas dinámicas -->
     <script type="text/javascript" src="https://pym.nprapps.org/pym.v1.min.js"></script>
     <script>
         const pymChild = new pym.Child();
-        let isChartActive = false;
     </script>
 </body>
 </html>

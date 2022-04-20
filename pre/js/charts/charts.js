@@ -1,7 +1,7 @@
 //Desarrollo de las visualizaciones
 import * as d3 from 'd3';
 import { numberWithCommas2 } from '../helpers';
-//import { getInTooltip, getOutTooltip, positionTooltip } from './modules/tooltip';
+import { getInTooltip, getOutTooltip, positionTooltip } from '../modules/tooltip';
 import { setChartHeight } from '../modules/height';
 import { setChartCanvas, setChartCanvasImage } from '../modules/canvas-image';
 import { setRRSSLinks } from '../modules/rrss';
@@ -9,118 +9,102 @@ import { setFixedIframeUrl } from './chart_helpers';
 
 //Colores fijos
 const COLOR_PRIMARY_1 = '#F8B05C', 
-COLOR_PRIMARY_2 = '#E37A42', 
-COLOR_ANAG_1 = '#D1834F', 
-COLOR_ANAG_2 = '#BF2727', 
+COLOR_PRIMARY_2 = '#E37A42',
 COLOR_COMP_1 = '#528FAD', 
-COLOR_COMP_2 = '#AADCE0', 
-COLOR_GREY_1 = '#B5ABA4', 
-COLOR_GREY_2 = '#64605A', 
-COLOR_OTHER_1 = '#B58753', 
-COLOR_OTHER_2 = '#731854';
+COLOR_COMP_2 = '#AADCE0',
+COLOR_GREY_1 = '#D6D6D6', 
+COLOR_GREY_2 = '#A3A3A3',
+COLOR_ANAG__PRIM_1 = '#BA9D5F', 
+COLOR_ANAG_PRIM_2 = '#9E6C51',
+COLOR_ANAG_PRIM_3 = '#9E3515',
+COLOR_ANAG_COMP_1 = '#1C5A5E';
 
 export function initChart(iframe) {
     //Desarrollo del gráfico
-    d3.csv('https://raw.githubusercontent.com/CarlosMunozDiazCSIC/informe_perfil_mayores_2022_demografia_1_9/main/data/distribucion_poblacion_extranjeros.csv', function(error,data) {
+    d3.csv('https://raw.githubusercontent.com/CarlosMunozDiazCSIC/informe_perfil_mayores_2022_demografia_1_9/main/data/distribucion_poblacion_extranjeros_v2.csv', function(error,data) {
         if (error) throw error;
-
-        //Parcelamos los datos
-        let totalPop = data.filter(function(item) { 
-            if(item['Edad..grandes.grupos.de.edad.'] != '65+'){
-                return item;
-            }
-        });
-
-        let mas65Pop = data.filter(function(item) { 
-            if(item['Edad..grandes.grupos.de.edad.'] == '65+'){
-                return item;
-            }
-        });
-
-        let currentFirst = 0;
-        let stackedFirst = totalPop.map(function(item) {
-            let data = {0: currentFirst, 1: currentFirst + parseFloat(item.porc_total), data: {name: item.NAME_NAC, porc_total: item.porc_total, total_pop: item.Total }};
-            currentFirst = currentFirst + parseFloat(item.porc_total);
-            return data;
-        });
-
-        let currentSecond = 0;
-        let stackedSecond = mas65Pop.map(function(item) {
-            let data = {0: currentSecond, 1: currentSecond + parseFloat(item.porc_total), data: {name: item.NAME_NAC, porc_total: item.porc_total, total_pop: item.Total }};
-            currentSecond = currentSecond + parseFloat(item.porc_total);
-            return data;
-        });
         
-        ///// Desarrollo de ambos gráficos
-        let margin = {top: 10, right: 10, bottom: 30, left: 5},
-            width = document.getElementById('circle--first').clientWidth - margin.left - margin.right,
-            height = document.getElementById('circle--first').clientHeight - margin.top - margin.bottom;
+        //Declaramos fuera las variables genéricas
+        let margin = {top: 20, right: 20, bottom: 20, left: 85},
+            width = document.getElementById('chart').clientWidth - margin.left - margin.right,
+            height = document.getElementById('chart').clientHeight - margin.top - margin.bottom;
 
-        let chart1 = d3.select("#circle--first")
+        let svg = d3.select("#chart")
             .append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
+              .attr("width", width + margin.left + margin.right)
+              .attr("height", height + margin.top + margin.bottom)
             .append("g")
-                .attr("transform",
-                    "translate(" + margin.left + "," + margin.top + ")");
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        
+        let gruposContinentes = ['UE27_2020','EU_NO_UE27','AF','AN','SUD','AS','OT_2'];
 
-        let chart2 = d3.select("#circle--second")
-            .append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-                .attr("transform",
-                    "translate(" + margin.left + "," + margin.top + ")");
-
-        //Ejes > No habría eje Y
+        //Ejes X
         let x = d3.scaleLinear()
             .domain([0,100])
             .range([0,width]);
 
         let xAxis = d3.axisBottom(x).ticks(5);
         
-        chart1.append("g")
+        svg.append("g")
             .attr("transform", "translate(0," + height + ")")
             .call(xAxis);
 
-        chart2.append("g")
-            .attr("transform", "translate(0," + height + ")")
-            .call(xAxis);
-                            
+        //Eje Y
+        let y = d3.scaleBand()
+            .domain(['todas','mas65'])
+            .range([0, height]);
+        
+        let tickLabels = ['Total', '65 y más años'];
+
+        let yAxis = function(g) {
+            g.call(d3.axisLeft(y).tickFormat((d,i) => tickLabels[i]))
+        }
+        
+        svg.append("g")
+            .attr("class", "yaxis")
+            .call(yAxis);
+
         let color = d3.scaleOrdinal()
-            .range([COLOR_PRIMARY_1, COLOR_COMP_2, COLOR_COMP_1, COLOR_GREY_1, COLOR_ANAG_1, COLOR_ANAG_2, COLOR_OTHER_2]);
+            .domain(gruposContinentes)
+            .range([COLOR_PRIMARY_1, COLOR_COMP_2, COLOR_COMP_1, COLOR_GREY_1, COLOR_OTHER_1, COLOR_OTHER_2]);
 
-
+        let stackedDataContinentes = d3.stack()
+            .keys(gruposContinentes)
+            (data);
+        
         function init() {
-            chart1.append("g")
-                .attr('class','chart-g-1')
+            svg.append("g")
+                .attr('class','chart-g')
                 .selectAll("g")
-                .data(stackedFirst)
+                .data(stackedDataContinentes)
                 .enter()
                 .append("g")
-                .attr("fill", function(d) { return color(d.data.name); })
-                .append("rect")
-                    .attr("y", function(d) { return 0; })
-                    .attr("x", function(d) { return x(d[0]); })
-                    .attr("width", function(d) { return x(d[1]) - x(d[0]); })
-                    .attr("height", '60px');
-            
-            chart2.append("g")
-                .attr('class','chart-g-1')
-                .selectAll("g")
-                .data(stackedSecond)
+                .attr("fill", function(d) { return color(d.key); })
+                .selectAll("rect")
+                .data(function(d) { return d; })
                 .enter()
-                .append("g")
-                .attr("fill", function(d) { return color(d.data.name); })
                 .append("rect")
-                    .attr("y", function(d) { return 0; })
-                    .attr("x", function(d) { return x(d[0]); })
-                    .attr("width", function(d) { return x(d[1]) - x(d[0]); })
-                    .attr("height", '60px');
+                .attr('class','rect')
+                .attr("y", function(d) { return y(d.data.grupo) + y.bandwidth() / 4; })
+                .attr("x", function(d) { return 0; })
+                .attr("width", function(d) { return x(0); })
+                .attr("height", y.bandwidth() / 2)
+                .transition()
+                .duration(2000)
+                .attr("x", function(d) { return x(d[0]); })
+                .attr("width", function(d) { return x(d[1]) - x(d[0]); });
         }
 
         function animateChart() {
-
+            svg.selectAll('.rect')
+                .attr("y", function(d) { return y(d.data.grupo) + y.bandwidth() / 4; })
+                .attr("x", function(d) { return 0; })
+                .attr("width", function(d) { return x(0); })
+                .attr("height", y.bandwidth() / 2)
+                .transition()
+                .duration(2000)
+                .attr("x", function(d) { return x(d[0]); })
+                .attr("width", function(d) { return x(d[1]) - x(d[0]); });
         }
 
         /////
