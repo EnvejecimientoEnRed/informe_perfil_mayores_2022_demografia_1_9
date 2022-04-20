@@ -95,6 +95,8 @@ button {
             
 
             &--item {
+                width: 130px;
+
                 position: relative;
                 margin-top: 8px;
 
@@ -139,7 +141,7 @@ button {
             margin-top: 8px;          
 
             .chart--viz {
-                height: 240px;                
+                height: 200px;                
 
                 & .tick text {
                     font-family: 'Montserrat';
@@ -265,6 +267,7 @@ button {
     }
 
     &__animate {
+        width: 141px;
         height: 32px;
         border: 1.2px solid #E37A42;
         
@@ -417,7 +420,7 @@ button {
     position: absolute;
     opacity: 0;   
 
-    width: 135px;
+    width: 145px;
     height: auto;
     padding: 8px;
     background-color: #fffaf0;
