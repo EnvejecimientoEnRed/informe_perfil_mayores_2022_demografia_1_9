@@ -54,7 +54,21 @@ export function initChart(iframe) {
             .domain([0,100])
             .range([0,width]);
 
-        let xAxis = d3.axisBottom(x).ticks(5);
+        let xAxis = function(svg) {
+            svg.call(d3.axisBottom(x).ticks(5));
+            svg.call(function(g) {
+                g.call(function(g){
+                    g.selectAll('.tick line')
+                        .attr('class', function(d,i) {
+                            if (d == 0) {
+                                return 'line-special';
+                            }
+                        })
+                        .attr('y1', '0')
+                        .attr('y2', `-${height}`)
+                });
+            });
+        } 
         
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
