@@ -104,9 +104,6 @@ export function initChart(iframe) {
                 .attr("width", function(d) { return x(0); })
                 .attr("height", y.bandwidth() / 2)
                 .on('mouseover', function(d,i,e){
-                    console.log(d, data);
-                    
-
                     //Opacidad de las barras
                     let other = svg.selectAll('.rect-1');
                     let current = this.parentNode.classList[1];
@@ -118,8 +115,6 @@ export function initChart(iframe) {
                     _this.each(function() {
                         this.style.opacity = '1';
                     });
-
-                    console.log(current);
 
                     //Texto                    
                     let html = '<p class="chart__tooltip--title">' + dictionary[current] + '</p>' + 
