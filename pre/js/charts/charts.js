@@ -28,7 +28,7 @@ let dictionary = {
     OT_2: 'Otros'
 }
 
-export function initChart(iframe) {
+export function initChart() {
     //Desarrollo del gráfico
     d3.csv('https://raw.githubusercontent.com/CarlosMunozDiazCSIC/informe_perfil_mayores_2022_demografia_1_9/main/data/distribucion_poblacion_extranjeros_v2.csv', function(error,data) {
         if (error) throw error;
@@ -82,7 +82,7 @@ export function initChart(iframe) {
         let tickLabels = ['Total', '65 y más'];
 
         let yAxis = function(g) {
-            g.call(d3.axisLeft(y).tickFormat((d,i) => tickLabels[i]))
+            g.call(d3.axisLeft(y).tickFormat((d,i) => tickLabels[i]));
         }
         
         svg.append("g")
@@ -179,6 +179,10 @@ export function initChart(iframe) {
         //Animación del gráfico
         document.getElementById('replay').addEventListener('click', function() {
             animateChart();
+
+            setTimeout(() => {
+                setChartCanvas();
+            }, 4000);
         });
 
         /////
@@ -194,7 +198,9 @@ export function initChart(iframe) {
         setRRSSLinks('distribucion_poblacion_mayor_extranjera');
 
         //Captura de pantalla de la visualización
-        setChartCanvas();
+        setTimeout(() => {
+            setChartCanvas();
+        }, 4000);
 
         let pngDownload = document.getElementById('pngImage');
 
@@ -203,6 +209,6 @@ export function initChart(iframe) {
         });
 
         //Altura del frame
-        setChartHeight(iframe);
+        setChartHeight();
     });    
 }
