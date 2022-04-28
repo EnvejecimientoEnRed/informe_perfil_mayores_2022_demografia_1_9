@@ -36,7 +36,7 @@ export function initChart() {
         data = [data[0],data[1]]
         
         //Declaramos fuera las variables genéricas
-        let margin = {top: 5, right: 15, bottom: 20, left: 62.5},
+        let margin = {top: 12.5, right: 15, bottom: 25, left: 62.5},
             width = document.getElementById('chart').clientWidth - margin.left - margin.right,
             height = document.getElementById('chart').clientHeight - margin.top - margin.bottom;
 
