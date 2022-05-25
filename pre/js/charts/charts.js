@@ -30,7 +30,7 @@ let dictionary = {
 
 export function initChart() {
     //Desarrollo del gráfico
-    d3.csv('https://raw.githubusercontent.com/CarlosMunozDiazCSIC/informe_perfil_mayores_2022_demografia_1_9/main/data/distribucion_poblacion_extranjeros_v2.csv', function(error,data) {
+    d3.csv('https://raw.githubusercontent.com/EnvejecimientoEnRed/informe_perfil_mayores_2022_demografia_1_9/main/data/distribucion_poblacion_extranjeros_v2.csv', function(error,data) {
         if (error) throw error;
 
         data = [data[0],data[1]]
